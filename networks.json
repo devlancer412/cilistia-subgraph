@@ -1,0 +1,10 @@
+{
+  "goerli": {
+    "CILStaking": {
+      "address": "0x5d9d8Af868eEe99D6D1Bb544A5D55F6F38927A07"
+    },
+    "MarketPlace": {
+      "address": "0x0dCfBFA6FBB7c39005C53DaD776fCC4A87a33f87"
+    }
+  }
+}

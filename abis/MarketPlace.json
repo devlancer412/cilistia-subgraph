@@ -1,0 +1,449 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "cil_", "type": "address" },
+      { "internalType": "address", "name": "multiSig_", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "AccountBlocked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "key",
+        "type": "bytes32"
+      }
+    ],
+    "name": "OfferCanceled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "offerKey",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "positionKey",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "amount",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "terms",
+        "type": "string"
+      }
+    ],
+    "name": "OfferCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "key",
+        "type": "bytes32"
+      }
+    ],
+    "name": "OfferReleased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "key",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "price",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "amount",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "minAmount",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "maxAmount",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "priceType",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "paymentMethod",
+        "type": "uint8"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "terms",
+        "type": "string"
+      }
+    ],
+    "name": "PositionCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "key",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "amount",
+        "type": "uint128"
+      }
+    ],
+    "name": "PositionUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "key", "type": "bytes32" }],
+    "name": "cancelOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cil",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cilPair",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cilStaking",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "positionKey", "type": "bytes32" },
+      { "internalType": "uint128", "name": "amount", "type": "uint128" },
+      { "internalType": "string", "name": "terms", "type": "string" }
+    ],
+    "name": "createOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint128", "name": "price", "type": "uint128" },
+          { "internalType": "uint128", "name": "amount", "type": "uint128" },
+          { "internalType": "uint128", "name": "minAmount", "type": "uint128" },
+          { "internalType": "uint128", "name": "maxAmount", "type": "uint128" },
+          { "internalType": "bool", "name": "priceType", "type": "bool" },
+          { "internalType": "uint8", "name": "paymentMethod", "type": "uint8" },
+          { "internalType": "address", "name": "token", "type": "address" }
+        ],
+        "internalType": "struct MarketPlace.PositionCreateParam",
+        "name": "params",
+        "type": "tuple"
+      },
+      { "internalType": "string", "name": "terms", "type": "string" }
+    ],
+    "name": "createPosition",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "key", "type": "bytes32" },
+      { "internalType": "uint128", "name": "amount", "type": "uint128" }
+    ],
+    "name": "decreasePosition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "feePoint",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "key", "type": "bytes32" }],
+    "name": "forceCancelOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "key", "type": "bytes32" }],
+    "name": "forceRemovePosition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCilPrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "positionKey", "type": "bytes32" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "address", "name": "creator", "type": "address" },
+      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+    ],
+    "name": "getOfferKey",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint8", "name": "paymentMethod", "type": "uint8" },
+      { "internalType": "uint128", "name": "price", "type": "uint128" },
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "address", "name": "creator", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "uint128", "name": "minAmount", "type": "uint128" },
+      { "internalType": "uint128", "name": "maxAmount", "type": "uint128" },
+      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+    ],
+    "name": "getPositionKey",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getStakedCil",
+    "outputs": [
+      { "internalType": "uint256", "name": "totalAmount", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "token", "type": "address" }
+    ],
+    "name": "getTokenPrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "key", "type": "bytes32" },
+      { "internalType": "uint128", "name": "amount", "type": "uint128" }
+    ],
+    "name": "increasePosition",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "cilStaking_", "type": "address" },
+      { "internalType": "address", "name": "cilPair_", "type": "address" },
+      { "internalType": "address", "name": "ethPricefeed_", "type": "address" }
+    ],
+    "name": "init",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "isBlocked",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "multiSig",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "offers",
+    "outputs": [
+      { "internalType": "bytes32", "name": "positionKey", "type": "bytes32" },
+      { "internalType": "uint128", "name": "amount", "type": "uint128" },
+      { "internalType": "address", "name": "creator", "type": "address" },
+      { "internalType": "bool", "name": "released", "type": "bool" },
+      { "internalType": "bool", "name": "canceled", "type": "bool" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "positions",
+    "outputs": [
+      { "internalType": "uint128", "name": "price", "type": "uint128" },
+      { "internalType": "uint128", "name": "amount", "type": "uint128" },
+      { "internalType": "uint128", "name": "minAmount", "type": "uint128" },
+      { "internalType": "uint128", "name": "maxAmount", "type": "uint128" },
+      {
+        "internalType": "uint128",
+        "name": "offerredAmount",
+        "type": "uint128"
+      },
+      { "internalType": "bool", "name": "priceType", "type": "bool" },
+      { "internalType": "uint8", "name": "paymentMethod", "type": "uint8" },
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "address", "name": "creator", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "pricefeeds",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "key", "type": "bytes32" }],
+    "name": "releaseOffer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "address", "name": "pricefeed", "type": "address" }
+    ],
+    "name": "setPriceFeed",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
