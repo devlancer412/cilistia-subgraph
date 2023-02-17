@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: CILStaking
@@ -13,19 +13,17 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - StakeHistory
-        - UnStakeHistory
-        - CILHolder
+        - StakeUpdated
+        - UnStaked
       abis:
         - name: CILStaking
-          file: ./abis/CILStaking.json
+          file: CILStaking\abis\CILStaking.json
       eventHandlers:
         - event: StakeUpdated(address,uint256,uint256)
           handler: handleStakeUpdated
         - event: UnStaked(address,uint256)
           handler: handleUnStaked
-      file: ./src/cil-staking.ts
-
+      file: CILStaking\CILStaking.wasm
   - kind: ethereum
     name: MarketPlace
     network: goerli
@@ -37,24 +35,30 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - CILHolder
-        - Offer
-        - Position
+        - AccountBlocked
+        - OfferCanceled
+        - OfferCreated
+        - OfferReleased
+        - OwnershipTransferred
+        - PositionCreated
+        - PositionUpdated
       abis:
         - name: MarketPlace
-          file: ./abis/MarketPlace.json
+          file: MarketPlace\abis\MarketPlace.json
       eventHandlers:
         - event: AccountBlocked(address)
           handler: handleAccountBlocked
         - event: OfferCanceled(indexed bytes32)
           handler: handleOfferCanceled
-        - event: OfferCreated(bytes32,indexed bytes32,indexed address,uint128,string)
+        - event: OfferCreated(bytes32,indexed bytes32,uint128,string)
           handler: handleOfferCreated
         - event: OfferReleased(indexed bytes32)
           handler: handleOfferReleased
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
         - event: PositionCreated(bytes32,uint128,uint128,uint128,uint128,bool,uint8,indexed
             address,indexed address,string)
           handler: handlePositionCreated
-        - event: PositionUpdated(indexed bytes32,uint128,uint128)
+        - event: PositionUpdated(indexed bytes32,uint128)
           handler: handlePositionUpdated
-      file: ./src/market-place.ts
+      file: MarketPlace\MarketPlace.wasm

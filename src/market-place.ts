@@ -1,125 +1,111 @@
+import { BigInt } from '@graphprotocol/graph-ts';
 import {
   AccountBlocked as AccountBlockedEvent,
   OfferCanceled as OfferCanceledEvent,
   OfferCreated as OfferCreatedEvent,
   OfferReleased as OfferReleasedEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
   PositionCreated as PositionCreatedEvent,
-  PositionUpdated as PositionUpdatedEvent
-} from "../generated/MarketPlace/MarketPlace"
-import {
-  AccountBlocked,
-  OfferCanceled,
-  OfferCreated,
-  OfferReleased,
-  OwnershipTransferred,
-  PositionCreated,
-  PositionUpdated
-} from "../generated/schema"
+  PositionUpdated as PositionUpdatedEvent,
+} from '../generated/MarketPlace/MarketPlace';
+import { Position, Offer } from '../generated/schema';
+import { createOrGetHolder } from './cil-holder';
 
 export function handleAccountBlocked(event: AccountBlockedEvent): void {
-  let entity = new AccountBlocked(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
+  let holder = createOrGetHolder(event.params.account);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  holder.stakedAmount = BigInt.zero();
+  holder.lockedAmount = BigInt.zero();
+  holder.blocked = true;
 
-  entity.save()
+  holder.save();
 }
 
 export function handleOfferCanceled(event: OfferCanceledEvent): void {
-  let entity = new OfferCanceled(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.key = event.params.key
+  let offer = Offer.load(event.params.key);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if (!offer) {
+    return;
+  }
 
-  entity.save()
+  offer.status = 'Canceled';
+  offer.save();
+
+  let holder = createOrGetHolder(offer.creator);
+
+  holder.openedOfferAmount = holder.openedOfferAmount.minus(offer.amount);
+  holder.save();
 }
 
 export function handleOfferCreated(event: OfferCreatedEvent): void {
-  let entity = new OfferCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.offerKey = event.params.offerKey
-  entity.positionKey = event.params.positionKey
-  entity.amount = event.params.amount
-  entity.terms = event.params.terms
+  let offer = new Offer(event.params.offerKey);
+  offer.position = event.params.positionKey;
+  offer.amount = event.params.amount;
+  offer.terms = event.params.terms;
+  offer.creator = event.params.creator;
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  offer.transactionHash = event.transaction.hash;
 
-  entity.save()
+  offer.save();
+
+  let holder = createOrGetHolder(offer.creator);
+
+  holder.openedOfferAmount = holder.openedOfferAmount.plus(offer.amount);
+
+  holder.save();
 }
 
 export function handleOfferReleased(event: OfferReleasedEvent): void {
-  let entity = new OfferReleased(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.key = event.params.key
+  let offer = Offer.load(event.params.key);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if (!offer) {
+    return;
+  }
 
-  entity.save()
-}
+  offer.status = 'Canceled';
+  offer.save();
 
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
+  let holder = createOrGetHolder(offer.creator);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  holder.openedOfferAmount = holder.openedOfferAmount.minus(offer.amount);
+  holder.save();
 }
 
 export function handlePositionCreated(event: PositionCreatedEvent): void {
-  let entity = new PositionCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.key = event.params.key
-  entity.price = event.params.price
-  entity.amount = event.params.amount
-  entity.minAmount = event.params.minAmount
-  entity.maxAmount = event.params.maxAmount
-  entity.priceType = event.params.priceType
-  entity.paymentMethod = event.params.paymentMethod
-  entity.token = event.params.token
-  entity.creator = event.params.creator
-  entity.terms = event.params.terms
+  const {
+    key,
+    price,
+    amount,
+    minAmount,
+    maxAmount,
+    priceType,
+    paymentMethod,
+    token,
+    creator,
+    terms,
+  } = event.params;
+  let position = new Position(key);
+  position.price = price;
+  position.amount = amount;
+  position.offeredAmount = BigInt.zero();
+  position.minAmount = minAmount;
+  position.maxAmount = maxAmount;
+  position.priceType = priceType;
+  position.paymentMethod = paymentMethod;
+  position.token = token;
+  position.creator = creator;
+  position.terms = terms;
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  position.blockTimestamp = event.block.timestamp;
 
-  entity.save()
+  position.save();
 }
 
 export function handlePositionUpdated(event: PositionUpdatedEvent): void {
-  let entity = new PositionUpdated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.key = event.params.key
-  entity.amount = event.params.amount
+  let position = new Position(event.params.key);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  position.amount = event.params.amount;
+  position.offeredAmount = event.params.offeredAmount;
+  position.blockTimestamp = event.block.timestamp;
 
-  entity.save()
+  position.save();
 }

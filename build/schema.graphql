@@ -1,0 +1,88 @@
+type StakeUpdated @entity(immutable: true) {
+  id: Bytes!
+  user: Bytes! # address
+  stakedAmount: BigInt! # uint256
+  lockedAmount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UnStaked @entity(immutable: true) {
+  id: Bytes!
+  user: Bytes! # address
+  rewardAmount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AccountBlocked @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OfferCanceled @entity(immutable: true) {
+  id: Bytes!
+  key: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OfferCreated @entity(immutable: true) {
+  id: Bytes!
+  offerKey: Bytes! # bytes32
+  positionKey: Bytes! # bytes32
+  amount: BigInt! # uint128
+  terms: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OfferReleased @entity(immutable: true) {
+  id: Bytes!
+  key: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PositionCreated @entity(immutable: true) {
+  id: Bytes!
+  key: Bytes! # bytes32
+  price: BigInt! # uint128
+  amount: BigInt! # uint128
+  minAmount: BigInt! # uint128
+  maxAmount: BigInt! # uint128
+  priceType: Boolean! # bool
+  paymentMethod: Int! # uint8
+  token: Bytes! # address
+  creator: Bytes! # address
+  terms: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PositionUpdated @entity(immutable: true) {
+  id: Bytes!
+  key: Bytes! # bytes32
+  amount: BigInt! # uint128
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

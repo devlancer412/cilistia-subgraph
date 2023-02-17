@@ -57,12 +57,6 @@
         "type": "bytes32"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
         "indexed": false,
         "internalType": "uint128",
         "name": "amount",
@@ -190,12 +184,6 @@
         "indexed": false,
         "internalType": "uint128",
         "name": "amount",
-        "type": "uint128"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint128",
-        "name": "offeredAmount",
         "type": "uint128"
       }
     ],
@@ -685,7 +673,7 @@
       },
       {
         "internalType": "uint128",
-        "name": "offeredAmount",
+        "name": "offerredAmount",
         "type": "uint128"
       },
       {

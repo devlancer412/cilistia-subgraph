@@ -1,34 +1,51 @@
 import {
   StakeUpdated as StakeUpdatedEvent,
-  UnStaked as UnStakedEvent
-} from "../generated/CILStaking/CILStaking"
-import { StakeUpdated, UnStaked } from "../generated/schema"
+  UnStaked as UnStakedEvent,
+} from '../generated/CILStaking/CILStaking';
+import { StakeHistory, UnStakeHistory } from '../generated/schema';
+import { createOrGetHolder } from './cil-holder';
 
 export function handleStakeUpdated(event: StakeUpdatedEvent): void {
-  let entity = new StakeUpdated(
+  const { user, stakedAmount, lockedAmount } = event.params;
+  let entity = new StakeHistory(
     event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.user = event.params.user
-  entity.stakedAmount = event.params.stakedAmount
-  entity.lockedAmount = event.params.lockedAmount
+  );
+  entity.user = user;
+  entity.stakedAmount = stakedAmount;
+  entity.lockedAmount = lockedAmount;
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  entity.blockTimestamp = event.block.timestamp;
 
-  entity.save()
+  entity.save();
+
+  let holder = createOrGetHolder(user);
+  if (stakedAmount > holder.stakedAmount) {
+    holder.totalRewardAmount = holder.totalRewardAmount
+      .plus(stakedAmount)
+      .minus(holder.stakedAmount);
+  }
+  holder.stakedAmount = stakedAmount;
+  holder.lockedAmount = lockedAmount;
+  holder.blockTimestamp = event.block.timestamp;
+
+  holder.save();
 }
 
 export function handleUnStaked(event: UnStakedEvent): void {
-  let entity = new UnStaked(
+  const { user, rewardAmount } = event.params;
+  let entity = new UnStakeHistory(
     event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.user = event.params.user
-  entity.rewardAmount = event.params.rewardAmount
+  );
+  entity.user = user;
+  entity.rewardAmount = rewardAmount;
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  entity.blockTimestamp = event.block.timestamp;
 
-  entity.save()
+  entity.save();
+
+  let holder = createOrGetHolder(user);
+
+  holder.totalRewardAmount = holder.totalRewardAmount.plus(rewardAmount);
+
+  holder.save();
 }
