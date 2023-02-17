@@ -6,7 +6,7 @@ dataSources:
     name: CILStaking
     network: goerli
     source:
-      address: "0x5d9d8Af868eEe99D6D1Bb544A5D55F6F38927A07"
+      address: "0xE6f28e538D36593248627a0FE3a5626f47D2775D"
       abi: CILStaking
     mapping:
       kind: ethereum/events
@@ -30,7 +30,7 @@ dataSources:
     name: MarketPlace
     network: goerli
     source:
-      address: "0x0dCfBFA6FBB7c39005C53DaD776fCC4A87a33f87"
+      address: "0xCC651802A346C5e175bdEc9E14773c93698eDac5"
       abi: MarketPlace
     mapping:
       kind: ethereum/events
