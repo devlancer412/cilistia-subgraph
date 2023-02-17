@@ -8,6 +8,7 @@ dataSources:
     source:
       address: "0xE6f28e538D36593248627a0FE3a5626f47D2775D"
       abi: CILStaking
+      startBlock: 8507624
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -32,6 +33,7 @@ dataSources:
     source:
       address: "0xCC651802A346C5e175bdEc9E14773c93698eDac5"
       abi: MarketPlace
+      startBlock: 8507618
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

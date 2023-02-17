@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import {
   AccountBlocked as AccountBlockedEvent,
   OfferCanceled as OfferCanceledEvent,
@@ -30,7 +30,7 @@ export function handleOfferCanceled(event: OfferCanceledEvent): void {
   offer.status = 'Canceled';
   offer.save();
 
-  let holder = createOrGetHolder(offer.creator);
+  let holder = createOrGetHolder(Address.fromBytes(offer.creator));
 
   holder.openedOfferAmount = holder.openedOfferAmount.minus(offer.amount);
   holder.save();
@@ -47,7 +47,7 @@ export function handleOfferCreated(event: OfferCreatedEvent): void {
 
   offer.save();
 
-  let holder = createOrGetHolder(offer.creator);
+  let holder = createOrGetHolder(Address.fromBytes(offer.creator));
 
   holder.openedOfferAmount = holder.openedOfferAmount.plus(offer.amount);
 
@@ -64,36 +64,24 @@ export function handleOfferReleased(event: OfferReleasedEvent): void {
   offer.status = 'Canceled';
   offer.save();
 
-  let holder = createOrGetHolder(offer.creator);
+  let holder = createOrGetHolder(Address.fromBytes(offer.creator));
 
   holder.openedOfferAmount = holder.openedOfferAmount.minus(offer.amount);
   holder.save();
 }
 
 export function handlePositionCreated(event: PositionCreatedEvent): void {
-  const {
-    key,
-    price,
-    amount,
-    minAmount,
-    maxAmount,
-    priceType,
-    paymentMethod,
-    token,
-    creator,
-    terms,
-  } = event.params;
-  let position = new Position(key);
-  position.price = price;
-  position.amount = amount;
+  let position = new Position(event.params.key);
+  position.price = event.params.price;
+  position.amount = event.params.amount;
   position.offeredAmount = BigInt.zero();
-  position.minAmount = minAmount;
-  position.maxAmount = maxAmount;
-  position.priceType = priceType;
-  position.paymentMethod = paymentMethod;
-  position.token = token;
-  position.creator = creator;
-  position.terms = terms;
+  position.minAmount = event.params.minAmount;
+  position.maxAmount = event.params.maxAmount;
+  position.priceType = event.params.priceType;
+  position.paymentMethod = event.params.paymentMethod;
+  position.token = event.params.token;
+  position.creator = event.params.creator;
+  position.terms = event.params.terms;
 
   position.blockTimestamp = event.block.timestamp;
 

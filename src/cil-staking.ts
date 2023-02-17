@@ -6,46 +6,46 @@ import { StakeHistory, UnStakeHistory } from '../generated/schema';
 import { createOrGetHolder } from './cil-holder';
 
 export function handleStakeUpdated(event: StakeUpdatedEvent): void {
-  const { user, stakedAmount, lockedAmount } = event.params;
   let entity = new StakeHistory(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
-  entity.user = user;
-  entity.stakedAmount = stakedAmount;
-  entity.lockedAmount = lockedAmount;
+  entity.user = event.params.user;
+  entity.stakedAmount = event.params.stakedAmount;
+  entity.lockedAmount = event.params.lockedAmount;
 
   entity.blockTimestamp = event.block.timestamp;
 
   entity.save();
 
-  let holder = createOrGetHolder(user);
-  if (stakedAmount > holder.stakedAmount) {
+  let holder = createOrGetHolder(event.params.user);
+  if (event.params.stakedAmount > holder.stakedAmount) {
     holder.totalRewardAmount = holder.totalRewardAmount
-      .plus(stakedAmount)
+      .plus(event.params.stakedAmount)
       .minus(holder.stakedAmount);
   }
-  holder.stakedAmount = stakedAmount;
-  holder.lockedAmount = lockedAmount;
+  holder.stakedAmount = event.params.stakedAmount;
+  holder.lockedAmount = event.params.lockedAmount;
   holder.blockTimestamp = event.block.timestamp;
 
   holder.save();
 }
 
 export function handleUnStaked(event: UnStakedEvent): void {
-  const { user, rewardAmount } = event.params;
   let entity = new UnStakeHistory(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
-  entity.user = user;
-  entity.rewardAmount = rewardAmount;
+  entity.user = event.params.user;
+  entity.rewardAmount = event.params.rewardAmount;
 
   entity.blockTimestamp = event.block.timestamp;
 
   entity.save();
 
-  let holder = createOrGetHolder(user);
+  let holder = createOrGetHolder(event.params.user);
 
-  holder.totalRewardAmount = holder.totalRewardAmount.plus(rewardAmount);
+  holder.totalRewardAmount = holder.totalRewardAmount.plus(
+    event.params.rewardAmount
+  );
 
   holder.save();
 }
