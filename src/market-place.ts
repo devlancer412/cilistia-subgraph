@@ -8,7 +8,7 @@ import {
   PositionUpdated as PositionUpdatedEvent,
 } from '../generated/MarketPlace/MarketPlace';
 import { Position, Offer } from '../generated/schema';
-import { createOrGetHolder } from './cil-holder';
+import { createOrGetHolder } from './cil';
 
 export function handleAccountBlocked(event: AccountBlockedEvent): void {
   let holder = createOrGetHolder(event.params.account);
@@ -30,28 +30,42 @@ export function handleOfferCanceled(event: OfferCanceledEvent): void {
   offer.status = 'Canceled';
   offer.save();
 
-  let holder = createOrGetHolder(Address.fromBytes(offer.creator));
+  let buyer = createOrGetHolder(Address.fromBytes(offer.buyer));
 
-  holder.openedOfferAmount = holder.openedOfferAmount.minus(offer.amount);
-  holder.save();
+  buyer.openedOfferAmount = buyer.openedOfferAmount.minus(offer.amount);
+  buyer.save();
+
+  let seller = createOrGetHolder(Address.fromBytes(offer.seller));
+
+  seller.openedPositionAmount = seller.openedPositionAmount.plus(offer.amount);
+  seller.save();
 }
 
 export function handleOfferCreated(event: OfferCreatedEvent): void {
   let offer = new Offer(event.params.offerKey);
+  let position = Position.load(event.params.positionKey)!;
+
+  offer.status = 'Pending';
   offer.position = event.params.positionKey;
   offer.amount = event.params.amount;
   offer.terms = event.params.terms;
-  offer.creator = event.params.creator;
+  offer.buyer = event.params.creator;
+  offer.seller = position.creator;
 
-  offer.transactionHash = event.transaction.hash;
+  offer.blockTimestamp = event.block.timestamp;
 
   offer.save();
 
-  let holder = createOrGetHolder(Address.fromBytes(offer.creator));
+  let buyer = createOrGetHolder(Address.fromBytes(offer.buyer));
 
-  holder.openedOfferAmount = holder.openedOfferAmount.plus(offer.amount);
+  buyer.openedOfferAmount = buyer.openedOfferAmount.plus(offer.amount);
 
-  holder.save();
+  buyer.save();
+
+  let seller = createOrGetHolder(Address.fromBytes(offer.seller));
+
+  seller.openedPositionAmount = seller.openedPositionAmount.plus(offer.amount);
+  seller.save();
 }
 
 export function handleOfferReleased(event: OfferReleasedEvent): void {
@@ -61,17 +75,25 @@ export function handleOfferReleased(event: OfferReleasedEvent): void {
     return;
   }
 
-  offer.status = 'Canceled';
+  offer.status = 'Released';
   offer.save();
 
-  let holder = createOrGetHolder(Address.fromBytes(offer.creator));
+  let buyer = createOrGetHolder(Address.fromBytes(offer.buyer));
 
-  holder.openedOfferAmount = holder.openedOfferAmount.minus(offer.amount);
-  holder.save();
+  buyer.openedOfferAmount = buyer.openedOfferAmount.minus(offer.amount);
+  buyer.totalBuyAmount = buyer.totalBuyAmount.plus(offer.amount);
+  buyer.save();
+
+  let seller = createOrGetHolder(Address.fromBytes(offer.seller));
+
+  seller.openedPositionAmount = seller.openedPositionAmount.minus(offer.amount);
+  seller.totalSaleAmount = seller.totalSaleAmount.plus(offer.amount);
+  seller.save();
 }
 
 export function handlePositionCreated(event: PositionCreatedEvent): void {
   let position = new Position(event.params.key);
+
   position.price = event.params.price;
   position.amount = event.params.amount;
   position.offeredAmount = BigInt.zero();
@@ -89,7 +111,10 @@ export function handlePositionCreated(event: PositionCreatedEvent): void {
 }
 
 export function handlePositionUpdated(event: PositionUpdatedEvent): void {
-  let position = new Position(event.params.key);
+  let position = Position.load(event.params.key);
+  if (!position) {
+    return;
+  }
 
   position.amount = event.params.amount;
   position.offeredAmount = event.params.offeredAmount;

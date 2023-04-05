@@ -3,7 +3,7 @@ import {
   UnStaked as UnStakedEvent,
 } from '../generated/CILStaking/CILStaking';
 import { StakeHistory, UnStakeHistory } from '../generated/schema';
-import { createOrGetHolder } from './cil-holder';
+import { createOrGetHolder } from './cil';
 
 export function handleStakeUpdated(event: StakeUpdatedEvent): void {
   let entity = new StakeHistory(
@@ -25,7 +25,6 @@ export function handleStakeUpdated(event: StakeUpdatedEvent): void {
   }
   holder.stakedAmount = event.params.stakedAmount;
   holder.lockedAmount = event.params.lockedAmount;
-  holder.blockTimestamp = event.block.timestamp;
 
   holder.save();
 }

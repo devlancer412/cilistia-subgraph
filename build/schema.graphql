@@ -1,5 +1,11 @@
-type CILHolder @entity(immutable: true) {
+type AppVariable @entity(immutable: false) {
+  id: ID! # name
+  value: BigInt! # value
+}
+
+type CILHolder @entity(immutable: false) {
   id: Bytes! # address
+  balance: BigInt! # uint256
   stakedAmount: BigInt! # uint256
   lockedAmount: BigInt! # uint256
   totalStakedAmount: BigInt! # uint256
@@ -9,13 +15,13 @@ type CILHolder @entity(immutable: true) {
   openedPositionAmount: BigInt! # uint256
   openedOfferAmount: BigInt! # uint256
   blocked: Boolean! # true => blocked account
-  blockTimestamp: BigInt!
 
   stakeHistories: [StakeHistory!]! @derivedFrom(field: "user")
   unStakeHistories: [UnStakeHistory!]! @derivedFrom(field: "user")
   
   positions: [Position!]! @derivedFrom(field: "creator")
-  offers: [Offer!]! @derivedFrom(field: "creator")
+  buyOffers: [Offer!]! @derivedFrom(field: "buyer")
+  sellOffers: [Offer!]! @derivedFrom(field: "seller")
 }
 
 type StakeHistory @entity(immutable: true) {
@@ -33,17 +39,18 @@ type UnStakeHistory @entity(immutable: true) {
   blockTimestamp: BigInt!
 }
 
-type Offer @entity(immutable: true) {
+type Offer @entity(immutable: false) {
   id: Bytes! # bytes32
   status: OfferStatus!
   position: Position! # bytes32
   amount: BigInt! # uint128
-  creator: CILHolder! # address
+  seller: CILHolder! # address
+  buyer: CILHolder! # address
   terms: String! # string
-  transactionHash: Bytes!
+  blockTimestamp: BigInt!
 }
 
-type Position @entity(immutable: true) {
+type Position @entity(immutable: false) {
   id: Bytes! # bytes32
   price: BigInt! # uint128
   amount: BigInt! # uint128

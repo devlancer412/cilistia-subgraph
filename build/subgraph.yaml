@@ -3,6 +3,27 @@ schema:
   file: schema.graphql
 dataSources:
   - kind: ethereum
+    name: CIL
+    network: goerli
+    source:
+      address: "0xE270945780A63c2418F01c347a0071495cFc73de"
+      abi: CIL
+      startBlock: 8677394
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CILHolder
+        - AppVariables
+      abis:
+        - name: CIL
+          file: CIL\abis\ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: CIL\CIL.wasm
+  - kind: ethereum
     name: CILStaking
     network: goerli
     source:

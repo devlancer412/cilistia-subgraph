@@ -3,10 +3,32 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
+    name: CIL
+    network: goerli
+    source:
+      address: '0xE270945780A63c2418F01c347a0071495cFc73de'
+      abi: CIL
+      startBlock: 8677394
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CILHolder
+        - AppVariables
+      abis:
+        - name: CIL
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/cil.ts
+
+  - kind: ethereum
     name: CILStaking
     network: goerli
     source:
-      address: "0xE6f28e538D36593248627a0FE3a5626f47D2775D"
+      address: '0xE6f28e538D36593248627a0FE3a5626f47D2775D'
       abi: CILStaking
       startBlock: 8507624
     mapping:
@@ -31,7 +53,7 @@ dataSources:
     name: MarketPlace
     network: goerli
     source:
-      address: "0xCC651802A346C5e175bdEc9E14773c93698eDac5"
+      address: '0xCC651802A346C5e175bdEc9E14773c93698eDac5'
       abi: MarketPlace
       startBlock: 8507618
     mapping:
@@ -54,7 +76,8 @@ dataSources:
           handler: handleOfferCreated
         - event: OfferReleased(indexed bytes32)
           handler: handleOfferReleased
-        - event: PositionCreated(bytes32,uint128,uint128,uint128,uint128,bool,uint8,indexed
+        - event:
+            PositionCreated(bytes32,uint128,uint128,uint128,uint128,bool,uint8,indexed
             address,indexed address,string)
           handler: handlePositionCreated
         - event: PositionUpdated(indexed bytes32,uint128,uint128)
